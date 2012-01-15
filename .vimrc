@@ -16,6 +16,7 @@ set foldmethod=manual
 set noswapfile
 set nobackup
 
+
 map <silent><F3> :NEXTCOLOR<cr>
 map <silent><F4> :PREVCOLOR<cr> 
 
@@ -65,6 +66,7 @@ map <F8> :emenu Encoding.<TAB>
 au BufNewFile,BufRead *.info set filetype=info
 au BufNewFile,BufRead *.module set filetype=php
 au BufNewFile,BufRead *.inc set filetype=php
+au BufNewFile,BufRead *.install set filetype=php
 
 
 " Abbr
