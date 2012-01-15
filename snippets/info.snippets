@@ -1,0 +1,24 @@
+
+snippet theme
+	name = ${1:name}
+	description = ${2:description} 	
+	version = ${3:version}
+	core = ${4:core}.x			
+	engine = phptemplate
+	${5}
+
+snippet region
+	regions[${1:region name}]  =  ${2: region descripton}
+
+snippet css
+	stylesheets[all][] = css/${1:file_name}
+
+snippet script
+	scripts[] = js/${1:file name}
+	
+snippet module
+	name = ${1:name}
+	description = ${2:description} 	
+	version = ${3:version}
+	core = ${4:core}.x			
+	${5}
