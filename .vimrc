@@ -16,6 +16,10 @@ set foldmethod=manual
 set noswapfile
 set nobackup
 
+map <silent><F3> :NEXTCOLOR<cr>
+map <silent><F4> :PREVCOLOR<cr> 
+
+
 set cursorcolumn " highlight the current column
 set cursorline
 
