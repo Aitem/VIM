@@ -15,6 +15,10 @@ set cursorline
 set foldmethod=manual
 set noswapfile
 set nobackup
+set expandtab
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
 
 
 map <silent><F3> :NEXTCOLOR<cr>
