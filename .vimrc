@@ -64,7 +64,7 @@ menu Encoding.CP1251   :e ++enc=cp1251<CR>
 menu Encoding.CP866    :e ++enc=cp866<CR>
 menu Encoding.KOI8-U   :e ++enc=koi8-u<CR>
 menu Encoding.UTF-8    :e ++enc=utf-8<CR>
-map <F8> :emenu Encoding.<TAB>
+map <F9> :emenu Encoding.<TAB>
 
 
 au BufNewFile,BufRead *.info set filetype=info
@@ -100,3 +100,40 @@ inoremap <div<space> <div<esc>maa></div><esc>`aa
 abb <a <a<space>href="<esc>maa"></a><esc>`aa
 
 
+" run file with PHP CLI (CTRL-M)
+:autocmd FileType php noremap <F5> :w!<CR>:!/usr/bin/php %<CR>
+" PHP parser check (CTRL-L)
+:autocmd FileType php noremap <C-F5> :!/usr/bin/php -l %<CR>
+
+
+nmap <F7> <Esc>:BufExplorer<cr>
+vmap <F7> <esc>:BufExplorer<cr>
+imap <F7> <esc>:BufExplorer<cr>
+
+" F6 - предыдущий буфер
+nmap <F6> :bp<cr>
+vmap <F6> <esc>:bp<cr>i
+imap <F6> <esc>:bp<cr>i
+"
+" " F7 - следующий буфер
+nmap <F8> :bn<cr>
+vmap <F8> <esc>:bn<cr>i
+imap <F8> <esc>:bn<cr>i
+
+nmap <C-N>v :NERDTree<cr>
+vmap <C-N>v <esc>:NERDTree<cr>i
+imap <C-N>v <esc>:NERDTree<cr>i
+
+nmap <C-N>x :NERDTreeClose<cr>
+vmap <C-N>x <esc>:NERDTreeClose<cr>i
+imap <C-N>x <esc>:NERDTreeClose<cr>i
+
+
+
+setlocal dictionary+=~/.vim/dictionaries/phpfunclist.dict
+setlocal dictionary+=~/.vim/dictionaries/phpproto.dict
+setlocal complete=.,w,b,u,t,i,k
+
+
+let php_sql_query=1
+let php_htmlInStrings=1
