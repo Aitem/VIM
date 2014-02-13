@@ -20,7 +20,7 @@ set shiftwidth=4
 set softtabstop=4
 set tabstop=4
 set nu!
-
+let g:Powerline_symbols = 'fancy'
 
 map <silent><F3> :NEXTCOLOR<cr>
 map <silent><F4> :PREVCOLOR<cr> 
