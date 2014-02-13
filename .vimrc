@@ -19,6 +19,7 @@ set expandtab
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
+set nu!
 
 
 map <silent><F3> :NEXTCOLOR<cr>
@@ -27,6 +28,11 @@ map <silent><F4> :PREVCOLOR<cr>
 
 set cursorcolumn " highlight the current column
 set cursorline
+
+set omnifunc=csscomplete#CompleteCSS
+filetype plugin on
+set omnifunc=syntaxcomplete#Complete
+let g:neocomplcache_enable_at_startup = 1
 
 syntax on
 filetype on
@@ -120,9 +126,9 @@ nmap <F8> :bn<cr>
 vmap <F8> <esc>:bn<cr>i
 imap <F8> <esc>:bn<cr>i
 
-nmap <C-N>v :NERDTree<cr>
-vmap <C-N>v <esc>:NERDTree<cr>i
-imap <C-N>v <esc>:NERDTree<cr>i
+nmap <c-o> :NERDTree<cr>
+vmap <c-N> <esc>:NERDTree<cr>i
+imap <c-N> <esc>:NERDTree<cr>i
 
 nmap <C-N>x :NERDTreeClose<cr>
 vmap <C-N>x <esc>:NERDTreeClose<cr>i
@@ -137,3 +143,4 @@ setlocal complete=.,w,b,u,t,i,k
 
 let php_sql_query=1
 let php_htmlInStrings=1
+
