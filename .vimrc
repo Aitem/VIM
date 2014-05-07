@@ -20,13 +20,22 @@ set shiftwidth=4
 set softtabstop=4
 set tabstop=4
 set nu!
+set autochdir
 
+
+set runtimepath^=~/.vim/bundle/ctrlp.vim
+
+"map <F2> <Esc>:Tlist<CR><C-W>h<C-W>s:VTreeExplore<CR>:set nonu<CR><C-W>l
+nmap <F2> :TagbarToggle<CR> 
+let Tlist_Use_Right_Window   = 1
+
+execute pathogen#infect()
+call pathogen#helptags() " generate helptags for everything in 'runtimepath'
 
 map <silent><F3> :NEXTCOLOR<cr>
 map <silent><F4> :PREVCOLOR<cr> 
 
 
-set cursorcolumn " highlight the current column
 set cursorline
 
 set omnifunc=csscomplete#CompleteCSS
@@ -75,6 +84,7 @@ map <F9> :emenu Encoding.<TAB>
 
 au BufNewFile,BufRead *.info set filetype=info
 au BufNewFile,BufRead *.module set filetype=php
+au BufNewFile,BufRead *.log set filetype=httplog
 au BufNewFile,BufRead *.inc set filetype=php
 au BufNewFile,BufRead *.install set filetype=php
 
@@ -144,3 +154,13 @@ setlocal complete=.,w,b,u,t,i,k
 let php_sql_query=1
 let php_htmlInStrings=1
 
+autocmd BufWinLeave *.* mkview
+autocmd BufWinEnter *.* silent loadview
+
+function! StartUp()
+    if 0 == argc()
+        NERDTree
+    end
+endfunction
+
+autocmd VimEnter * call StartUp()

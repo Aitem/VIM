@@ -1,10 +1,2 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =8
-let g:netrw_dirhist_1='/home/aitem/Ready-Solution/yii'
-let g:netrw_dirhist_2='/home/aitem/Ready-Solution/yii/framework'
-let g:netrw_dirhist_3='/home/aitem/Ready-Solution/examples'
-let g:netrw_dirhist_4='/home/aitem/Ready-Solution/project/htdocs'
-let g:netrw_dirhist_5='/home/aitem/Ready-Solution/project/htdocs/css'
-let g:netrw_dirhist_6='/home/aitem/Ready-Solution/project/htdocs'
-let g:netrw_dirhist_7='/home/aitem/.vim/ftplugin'
-let g:netrw_dirhist_8='/home/aitem/.vim/autoload'
+let g:netrw_dirhist_cnt =0
