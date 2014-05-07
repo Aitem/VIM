@@ -22,7 +22,6 @@ set tabstop=4
 set nu!
 set autochdir
 
-
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 
 "map <F2> <Esc>:Tlist<CR><C-W>h<C-W>s:VTreeExplore<CR>:set nonu<CR><C-W>l
