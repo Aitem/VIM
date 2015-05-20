@@ -1,5 +1,54 @@
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+" plugin on GitHub repo
+Plugin 'tpope/vim-fugitive'
+" plugin from http://vim-scripts.org/vim/scripts.html
+Plugin 'L9'
+" Git plugin not hosted on GitHub
+Plugin 'git://git.wincent.com/command-t.git'
+" git repos on your local machine (i.e. when working on your own plugin)
+"
+Bundle 'slim-template/vim-slim.git'
+Bundle 'jlanzarotta/bufexplorer'
+" Plugin 'https://github.com/tpope/vim-rails'
+" The sparkup vim script is in a subdirectory of this repo called vim.
+" Pass the path to set the runtimepath properly.
+Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+
+Plugin 'kchmck/vim-coffee-script'
+Plugin 'git@github.com:scrooloose/nerdtree.git'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+
+
+
+
 " Base config
-set ts=4
 set autoindent
 set background=dark
 set lbr
@@ -16,11 +65,14 @@ set foldmethod=manual
 set noswapfile
 set nobackup
 set expandtab
-set shiftwidth=4
-set softtabstop=4
-set tabstop=4
+set softtabstop=2
+set tabstop=2
+set ts=2
+set shiftwidth=2
 set nu!
 set autochdir
+set t_Co=256
+set smarttab
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 
@@ -39,6 +91,7 @@ set cursorline
 
 set omnifunc=csscomplete#CompleteCSS
 filetype plugin on
+filetype plugin indent on
 set omnifunc=syntaxcomplete#Complete
 let g:neocomplcache_enable_at_startup = 1
 
@@ -86,6 +139,7 @@ au BufNewFile,BufRead *.module set filetype=php
 au BufNewFile,BufRead *.log set filetype=httplog
 au BufNewFile,BufRead *.inc set filetype=php
 au BufNewFile,BufRead *.install set filetype=php
+au BufNewFile,BufRead *.slim set filetype=slim
 
 
 " Abbr
@@ -163,3 +217,44 @@ function! StartUp()
 endfunction
 
 autocmd VimEnter * call StartUp()
+autocmd BufNewFile,BufRead *.slim set filetype=slim
+autocmd BufNewFile,BufRead *.slim set cursorcolumn
+set nocursorcolumn
+
+ if $COLORTERM == 'gnome-terminal' 
+    set term=gnome-256color 
+endif 
+
+set t_Co=256
+let g:solarized_termcolors=256
+colorscheme railscasts 
+
+fu! SeeTab()
+  if !exists("g:SeeTabEnabled")
+    let g:SeeTabEnabled = 0
+  end
+  if g:SeeTabEnabled==0
+    syn match leadspace /^\s\+/ contains=syntab
+    exe "syn match syntab /\\s\\{" . &sw . "}/hs=s,he=s+1 contained"
+    hi syntab guibg=Grey
+    let g:SeeTabEnabled=1
+  else
+    syn clear leadspace
+    syn clear syntab
+    let g:SeeTabEnabled=0
+  end
+endfunc
+com! -nargs=0 SeeTab :call SeeTab()
+
+set tabstop=2       " The width of a TAB is set to 4.
+                    " Still it is a \t. It is just that
+                    " Vim will interpret it to be having
+                    " a width of 4.
+
+set shiftwidth=2    " Indents will have a width of 4
+
+set softtabstop=2   " Sets the number of columns for a TAB
+
+set expandtab       " Expand TABs to spaces
+
+command E Ex
