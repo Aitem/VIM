@@ -66,12 +66,12 @@ hi link Include              Statement
 hi link PreCondit            Statement
 hi Todo                      ctermbg=NONE ctermfg=160 guifg=#d70000 guibg=NONE gui=bold
 
-hi LineNr                    guifg=#555555 ctermfg=236
+hi LineNr                    guifg=#555555 ctermfg=102
 hi String                    guifg=#A5C261 ctermfg=107
 hi link Number String
 hi PreProc                   guifg=#E6E1DC ctermfg=103
-hi Search                    guifg=NONE    ctermfg=NONE guibg=#444444 ctermbg=235
-hi IncSearch                 guifg=White   guibg=Black ctermfg=White ctermbg=Black
+"hi Search                   guifg=Yellow    ctermfg=Red ctermfg=White guibg=Green ctermbg=235
+hi incSearch                 guifg=Yellow    ctermfg=Red ctermfg=Green  ctermbg=235
 hi link Search IncSearch
 hi Title                     guifg=#FFFFFF ctermfg=15
 hi Type                      guifg=#DA4939 ctermfg=167 gui=NONE cterm=NONE
