@@ -20,6 +20,9 @@ Plugin 'scrooloose/nerdcommenter'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plugin 'git@github.com:scrooloose/nerdtree.git'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'digitaltoad/vim-jade'
+Plugin 'krisajenkins/vim-pipe'
+
 
 call vundle#end()            " required
 filetype plugin on
@@ -149,3 +152,7 @@ com! -nargs=0 SeeTab :call SeeTab()
 
 command E Ex
 map \e :%Eval<cr>
+
+:vmap R :!psql -e<enter>
+
+map <F9> :!psql -d nsi > mmedorgtype.json -e<enter>
