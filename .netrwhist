@@ -1,4 +1,8 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =2
-let g:netrw_dirhist_1='/home/aitem/Work/Aidbox/aidbox-cli'
-let g:netrw_dirhist_2='/home/aitem/Downloads'
+let g:netrw_dirhist_cnt =6
+let g:netrw_dirhist_1='/home/aitem/Work/miaz-loinc/ui/src'
+let g:netrw_dirhist_2='/home/aitem/Work/miaz-loinc/ui'
+let g:netrw_dirhist_3='/home/aitem/Work/miaz-loinc'
+let g:netrw_dirhist_4='/home/aitem/Work'
+let g:netrw_dirhist_5='/home/aitem'
+let g:netrw_dirhist_6='/home/aitem/.vim'

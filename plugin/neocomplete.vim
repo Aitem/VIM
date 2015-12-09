@@ -1,7 +1,6 @@
 "=============================================================================
 " FILE: neocomplete.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-"          manga_osyo (Original)
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -24,47 +23,39 @@
 " }}}
 "=============================================================================
 
+if exists('g:loaded_neocomplete')
+  finish
+endif
+let g:loaded_neocomplete = 1
+
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! unite#sources#file_include#define()
-  return s:source
-endfunction
+command! -nargs=0 -bar NeoCompleteEnable
+      \ call neocomplete#init#enable()
+command! -nargs=0 -bar NeoCompleteDisable
+      \ call neocomplete#init#disable()
+command! -nargs=0 -bar NeoCompleteLock
+      \ call neocomplete#commands#_lock()
+command! -nargs=0 -bar NeoCompleteUnlock
+      \ call neocomplete#commands#_unlock()
+command! -nargs=0 -bar NeoCompleteToggle
+      \ call neocomplete#commands#_toggle_lock()
+command! -nargs=1 -bar -complete=filetype NeoCompleteSetFileType
+      \ call neocomplete#commands#_set_file_type(<q-args>)
+command! -nargs=0 -bar NeoCompleteClean
+      \ call neocomplete#commands#_clean()
 
-let s:source = {
-      \ 'name' : 'file_include',
-      \ 'description' : 'candidates from include files',
-      \ 'hooks' : {},
-      \}
-function! s:source.hooks.on_init(args, context) "{{{
-  " From neocomplete include files.
-  let a:context.source__include_files =
-        \ neocomplete#sources#include#get_include_files(bufnr('%'))
-  let a:context.source__path = &path
-endfunction"}}}
-
-function! s:source.gather_candidates(args, context) "{{{
-  let files = map(copy(a:context.source__include_files), '{
-        \ "word" : neocomplete#util#substitute_path_separator(v:val),
-        \ "abbr" : neocomplete#util#substitute_path_separator(v:val),
-        \ "source" : "file_include",
-        \ "kind" : "file",
-        \ "action__path" : v:val
-        \ }')
-
-  for word in files
-    " Path search.
-    for path in map(split(a:context.source__path, ','),
-          \ 'neocomplete#util#substitute_path_separator(v:val)')
-      if path != '' && neocomplete#head_match(word.word, path . '/')
-        let word.abbr = word.abbr[len(path)+1 : ]
-        break
-      endif
-    endfor
-  endfor
-
-  return files
-endfunction"}}}
+" Global options definition. "{{{
+let g:neocomplete#enable_debug =
+      \ get(g:, 'neocomplete#enable_debug', 0)
+if get(g:, 'neocomplete#enable_at_startup', 0)
+  augroup neocomplete
+    " Enable startup.
+    autocmd CursorHold,InsertEnter
+          \ * call neocomplete#init#enable()
+  augroup END
+endif"}}}
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

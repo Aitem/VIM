@@ -1,7 +1,6 @@
 "=============================================================================
-" FILE: neocomplete.vim
+" FILE: converter_case.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-"          manga_osyo (Original)
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -27,44 +26,53 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! unite#sources#file_include#define()
-  return s:source
-endfunction
-
-let s:source = {
-      \ 'name' : 'file_include',
-      \ 'description' : 'candidates from include files',
-      \ 'hooks' : {},
-      \}
-function! s:source.hooks.on_init(args, context) "{{{
-  " From neocomplete include files.
-  let a:context.source__include_files =
-        \ neocomplete#sources#include#get_include_files(bufnr('%'))
-  let a:context.source__path = &path
+function! neocomplete#filters#converter_case#define() "{{{
+  return s:converter
 endfunction"}}}
 
-function! s:source.gather_candidates(args, context) "{{{
-  let files = map(copy(a:context.source__include_files), '{
-        \ "word" : neocomplete#util#substitute_path_separator(v:val),
-        \ "abbr" : neocomplete#util#substitute_path_separator(v:val),
-        \ "source" : "file_include",
-        \ "kind" : "file",
-        \ "action__path" : v:val
-        \ }')
+let s:converter = {
+      \ 'name' : 'converter_case',
+      \ 'description' : 'case converter',
+      \}
 
-  for word in files
-    " Path search.
-    for path in map(split(a:context.source__path, ','),
-          \ 'neocomplete#util#substitute_path_separator(v:val)')
-      if path != '' && neocomplete#head_match(word.word, path . '/')
-        let word.abbr = word.abbr[len(path)+1 : ]
-        break
+function! s:converter.filter(context) "{{{
+  if !neocomplete#is_text_mode() && !neocomplete#within_comment()
+    return a:context.candidates
+  endif
+
+  if a:context.complete_str =~ '^\l\{3}$'
+    for candidate in s:get_convert_candidates(a:context.candidates)
+      let candidate.word = tolower(candidate.word)
+      if has_key(candidate, 'abbr')
+        let candidate.abbr = tolower(candidate.abbr)
       endif
     endfor
-  endfor
+  elseif a:context.complete_str =~ '^\u\{3}$'
+    for candidate in s:get_convert_candidates(a:context.candidates)
+      let candidate.word = toupper(candidate.word)
+      if has_key(candidate, 'abbr')
+        let candidate.abbr = toupper(candidate.abbr)
+      endif
+    endfor
+  elseif a:context.complete_str =~ '^\u\l\+$'
+    for candidate in s:get_convert_candidates(a:context.candidates)
+      let candidate.word = toupper(candidate.word[0]).
+            \ candidate.word[1:]
+      if has_key(candidate, 'abbr')
+        let candidate.abbr = toupper(candidate.abbr[0]).
+              \ tolower(candidate.abbr[1:])
+      endif
+    endfor
+  endif
 
-  return files
+  return a:context.candidates
 endfunction"}}}
+
+function! s:get_convert_candidates(candidates)
+  return filter(copy(a:candidates),
+        \ "get(v:val, 'neocomplete__convertable', 1)
+        \  && v:val.word =~ '^[a-zA-Z0-9_''-]\\+$'")
+endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

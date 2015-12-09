@@ -1,7 +1,6 @@
 "=============================================================================
-" FILE: neocomplete.vim
-" AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-"          manga_osyo (Original)
+" FILE: custom.vim
+" AUTHOR: Shougo Matsushita <Shougo.Matsu@gmail.com>
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -27,43 +26,26 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! unite#sources#file_include#define()
-  return s:source
-endfunction
+function! neocomplete#custom#get() "{{{
+  if !exists('s:custom')
+    let s:custom = {}
+    let s:custom.sources = {}
+    let s:custom.sources._ = {}
+  endif
 
-let s:source = {
-      \ 'name' : 'file_include',
-      \ 'description' : 'candidates from include files',
-      \ 'hooks' : {},
-      \}
-function! s:source.hooks.on_init(args, context) "{{{
-  " From neocomplete include files.
-  let a:context.source__include_files =
-        \ neocomplete#sources#include#get_include_files(bufnr('%'))
-  let a:context.source__path = &path
+  return s:custom
 endfunction"}}}
 
-function! s:source.gather_candidates(args, context) "{{{
-  let files = map(copy(a:context.source__include_files), '{
-        \ "word" : neocomplete#util#substitute_path_separator(v:val),
-        \ "abbr" : neocomplete#util#substitute_path_separator(v:val),
-        \ "source" : "file_include",
-        \ "kind" : "file",
-        \ "action__path" : v:val
-        \ }')
+function! neocomplete#custom#source(source_name, option_name, value) "{{{
+  let custom_sources = neocomplete#custom#get().sources
 
-  for word in files
-    " Path search.
-    for path in map(split(a:context.source__path, ','),
-          \ 'neocomplete#util#substitute_path_separator(v:val)')
-      if path != '' && neocomplete#head_match(word.word, path . '/')
-        let word.abbr = word.abbr[len(path)+1 : ]
-        break
-      endif
-    endfor
+  for key in split(a:source_name, '\s*,\s*')
+    if !has_key(custom_sources, key)
+      let custom_sources[key] = {}
+    endif
+
+    let custom_sources[key][a:option_name] = a:value
   endfor
-
-  return files
 endfunction"}}}
 
 let &cpo = s:save_cpo

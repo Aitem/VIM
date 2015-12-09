@@ -1,7 +1,6 @@
 "=============================================================================
-" FILE: neocomplete.vim
-" AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-"          manga_osyo (Original)
+" FILE: context_filetype.vim
+" AUTHOR: Shougo Matsushita <Shougo.Matsu@gmail.com>
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -27,43 +26,37 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! unite#sources#file_include#define()
-  return s:source
-endfunction
+" context_filetype.vim installation check.
+if !exists('s:exists_context_filetype')
+  try
+    call context_filetype#version()
+    let s:exists_context_filetype = 1
+  catch
+    let s:exists_context_filetype = 0
+  endtry
+endif
 
-let s:source = {
-      \ 'name' : 'file_include',
-      \ 'description' : 'candidates from include files',
-      \ 'hooks' : {},
-      \}
-function! s:source.hooks.on_init(args, context) "{{{
-  " From neocomplete include files.
-  let a:context.source__include_files =
-        \ neocomplete#sources#include#get_include_files(bufnr('%'))
-  let a:context.source__path = &path
+function! neocomplete#context_filetype#set() "{{{
+  let neocomplete = neocomplete#get_current_neocomplete()
+  let context_filetype =
+        \ s:exists_context_filetype ?
+        \ context_filetype#get_filetype() : &filetype
+  if context_filetype == ''
+    let context_filetype = 'nothing'
+  endif
+  let neocomplete.context_filetype = context_filetype
+
+  return neocomplete.context_filetype
 endfunction"}}}
+function! neocomplete#context_filetype#get(filetype) "{{{
+  let context_filetype =
+        \ s:exists_context_filetype ?
+        \ context_filetype#get_filetype(a:filetype) : a:filetype
+  if context_filetype == ''
+    let context_filetype = 'nothing'
+  endif
 
-function! s:source.gather_candidates(args, context) "{{{
-  let files = map(copy(a:context.source__include_files), '{
-        \ "word" : neocomplete#util#substitute_path_separator(v:val),
-        \ "abbr" : neocomplete#util#substitute_path_separator(v:val),
-        \ "source" : "file_include",
-        \ "kind" : "file",
-        \ "action__path" : v:val
-        \ }')
-
-  for word in files
-    " Path search.
-    for path in map(split(a:context.source__path, ','),
-          \ 'neocomplete#util#substitute_path_separator(v:val)')
-      if path != '' && neocomplete#head_match(word.word, path . '/')
-        let word.abbr = word.abbr[len(path)+1 : ]
-        break
-      endif
-    endfor
-  endfor
-
-  return files
+  return context_filetype
 endfunction"}}}
 
 let &cpo = s:save_cpo

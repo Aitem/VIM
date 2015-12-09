@@ -1,7 +1,6 @@
 "=============================================================================
-" FILE: neocomplete.vim
-" AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-"          manga_osyo (Original)
+" FILE: variables.vim
+" AUTHOR: Shougo Matsushita <Shougo.Matsu@gmail.com>
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -27,43 +26,39 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! unite#sources#file_include#define()
-  return s:source
-endfunction
+function! neocomplete#variables#get_frequencies() "{{{
+  if !exists('s:filetype_frequencies')
+    let s:filetype_frequencies = {}
+  endif
+  let filetype = neocomplete#get_context_filetype()
+  if !has_key(s:filetype_frequencies, filetype)
+    let s:filetype_frequencies[filetype] = {}
+  endif
 
-let s:source = {
-      \ 'name' : 'file_include',
-      \ 'description' : 'candidates from include files',
-      \ 'hooks' : {},
-      \}
-function! s:source.hooks.on_init(args, context) "{{{
-  " From neocomplete include files.
-  let a:context.source__include_files =
-        \ neocomplete#sources#include#get_include_files(bufnr('%'))
-  let a:context.source__path = &path
+  let frequencies = s:filetype_frequencies[filetype]
+
+  return frequencies
 endfunction"}}}
 
-function! s:source.gather_candidates(args, context) "{{{
-  let files = map(copy(a:context.source__include_files), '{
-        \ "word" : neocomplete#util#substitute_path_separator(v:val),
-        \ "abbr" : neocomplete#util#substitute_path_separator(v:val),
-        \ "source" : "file_include",
-        \ "kind" : "file",
-        \ "action__path" : v:val
-        \ }')
+function! neocomplete#variables#get_sources() "{{{
+  if !exists('s:sources')
+    let s:sources = {}
+  endif
+  return s:sources
+endfunction"}}}
 
-  for word in files
-    " Path search.
-    for path in map(split(a:context.source__path, ','),
-          \ 'neocomplete#util#substitute_path_separator(v:val)')
-      if path != '' && neocomplete#head_match(word.word, path . '/')
-        let word.abbr = word.abbr[len(path)+1 : ]
-        break
-      endif
-    endfor
-  endfor
+function! neocomplete#variables#get_source(name) "{{{
+  if !exists('s:sources')
+    let s:sources = {}
+  endif
+  return get(s:sources, a:name, {})
+endfunction"}}}
 
-  return files
+function! neocomplete#variables#get_filters() "{{{
+  if !exists('s:filters')
+    let s:filters = {}
+  endif
+  return s:filters
 endfunction"}}}
 
 let &cpo = s:save_cpo

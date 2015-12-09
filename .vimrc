@@ -7,21 +7,36 @@ call vundle#rc()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
-Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
 Plugin 'kchmck/vim-coffee-script'
 Plugin 'ekalinin/Dockerfile.vim'
 Plugin 'slim-template/vim-slim.git'
 Plugin 'jlanzarotta/bufexplorer'
-Plugin 'majutsushi/tagbar'
-Plugin 'lukaszkorecki/CoffeeTags'
-Plugin 'Valloric/MatchTagAlways'
 Plugin 'scrooloose/nerdcommenter'
-Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-Plugin 'git@github.com:scrooloose/nerdtree.git'
-Plugin 'altercation/vim-colors-solarized'
+Plugin 'tpope/vim-fugitive'
 Plugin 'digitaltoad/vim-jade'
-Plugin 'krisajenkins/vim-pipe'
+Plugin 'Shougo/neocomplete.vim'
+Bundle 'christoomey/vim-tmux-navigator'
+Plugin 'pearofducks/ansible-vim'
+Plugin 'kshenoy/vim-signature'
+Plugin 'bling/vim-airline'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'powerman/vim-plugin-ruscmd'
+Plugin 'niquola/vim-pg'
+Plugin 'vim-scripts/git-log'
+
+let g:ctrlp_working_path_mode = 'ra'
+
+set wildignore+=*/node_modules/*,*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
+let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
+let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others']
+
+
+let g:startify_session_dir = '~/.vim/session'
+let g:startify_list_order = ['files', 'sessions']
+let g:startify_custom_header =  map(split(system('fortune | cowsay -f apt'), '\n'), '"   ". v:val') + ['']
+
 
 
 call vundle#end()            " required
@@ -74,13 +89,6 @@ call pathogen#infect()
 syntax enable
 filetype plugin indent on
 
-
-set omnifunc=csscomplete#CompleteCSS
-set omnifunc=syntaxcomplete#Complete
-
-let g:neocomplcache_enable_at_startup = 1
-let g:CoffeeAutoTagFile="~/.tags"
-
 autocmd BufNewFile	*.spec	call SKEL_spec()
 
 " Paste
@@ -94,10 +102,8 @@ au BufNewFile,BufRead *.install set filetype=php
 au BufNewFile,BufRead *.slim set filetype=slim
 
 let mapleader = ","
-nnoremap <leader>m zfat
+map <leader>m :SignatureListMarks<cr>
 
-" Abbr
-abb ndoe node
 
 " HOT Keys
 map <S-tab> :tabprevious<cr>
@@ -110,18 +116,14 @@ imap <C-t> <ESC>:tabnew<cr>
 
 setlocal complete=.,w,b,u,t,i,k
 
-
-autocmd BufWinLeave *.* mkview
-autocmd BufWinEnter *.* silent loadview
-
-" Auto start neerd tree
+"" Auto start neerd tree
 function! StartUp()
     if 0 == argc()
         NERDTree
     end
 endfunction
 
-autocmd VimEnter * call StartUp()
+"autocmd VimEnter * call StartUp()
 autocmd BufNewFile,BufRead *.slim set filetype=slim
 autocmd BufNewFile,BufRead *.slim set cursorcolumn
 
@@ -152,7 +154,49 @@ com! -nargs=0 SeeTab :call SeeTab()
 
 command E Ex
 map \e :%Eval<cr>
+cnoreabbrev W w
+cnoreabbrev Qa qa
+cnoreabbrev Qa! qa!
+cnoreabbrev Q q
+
+map <leader>n [`<cr>
 
 :vmap R :!psql -e<enter>
 
 map <F9> :!psql -d nsi > mmedorgtype.json -e<enter>
+
+"============== NEOCOMPLETE
+"" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
+" Use neocomplete.
+let g:neocomplete#enable_at_startup = 1
+" Use smartcase.
+let g:neocomplete#enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+
+
+map <leader>t :!mocha --compilers mocha --compilers coffee:coffee-script/register %<cr>
+
+autocmd VimEnter * if !argc() | NERDTree | endif
+
+
+" Figutive
+nnoremap <F3> :Gstatus<CR>
+nnoremap <F4> :Gdiff<CR>
+nnoremap <F5> :Gblame<CR>
+
+set laststatus=2
+
+let g:airline_powerline_fonts = 1
+"let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='lucius'
+let g:airline_detect_whitespace=0
+let g:gitgutter_override_sign_column_highlight = 0
+
+
+highlight clear SignColumn
+highlight GitGutterAdd ctermfg=green guifg=darkgreen
+highlight GitGutterChange ctermfg=yellow guifg=darkyellow
+highlight GitGutterDelete ctermfg=red guifg=darkred
+highlight GitGutterChangeDelete ctermfg=yellow guifg=darkyellow

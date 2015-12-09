@@ -1,7 +1,6 @@
 "=============================================================================
-" FILE: neocomplete.vim
+" FILE: sorter_rank.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-"          manga_osyo (Original)
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -27,43 +26,46 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! unite#sources#file_include#define()
-  return s:source
-endfunction
-
-let s:source = {
-      \ 'name' : 'file_include',
-      \ 'description' : 'candidates from include files',
-      \ 'hooks' : {},
-      \}
-function! s:source.hooks.on_init(args, context) "{{{
-  " From neocomplete include files.
-  let a:context.source__include_files =
-        \ neocomplete#sources#include#get_include_files(bufnr('%'))
-  let a:context.source__path = &path
+function! neocomplete#filters#sorter_rank#define() "{{{
+  return s:sorter
 endfunction"}}}
 
-function! s:source.gather_candidates(args, context) "{{{
-  let files = map(copy(a:context.source__include_files), '{
-        \ "word" : neocomplete#util#substitute_path_separator(v:val),
-        \ "abbr" : neocomplete#util#substitute_path_separator(v:val),
-        \ "source" : "file_include",
-        \ "kind" : "file",
-        \ "action__path" : v:val
-        \ }')
+let s:sorter = {
+      \ 'name' : 'sorter_rank',
+      \ 'description' : 'sort by matched rank order',
+      \}
 
-  for word in files
-    " Path search.
-    for path in map(split(a:context.source__path, ','),
-          \ 'neocomplete#util#substitute_path_separator(v:val)')
-      if path != '' && neocomplete#head_match(word.word, path . '/')
-        let word.abbr = word.abbr[len(path)+1 : ]
-        break
-      endif
-    endfor
-  endfor
+function! s:sorter.filter(context) "{{{
+  lua << EOF
+do
+  local candidates = vim.eval('a:context.candidates')
+  local t = {}
+  local input = string.lower(vim.eval('a:context.input'))
+  for i = 1, #candidates do
+    t[i] = candidates[i-1]
+    local ti = t[i]
 
-  return files
+    -- Match position.
+    ti.neocomplete__match = select(1, string.find(
+        string.lower(ti.word), input, 1, true))
+    if ti.neocomplete__match == nil then
+      ti.neocomplete__match = string.len(ti.word)
+    end
+
+    if ti.rank == nil then
+      ti.rank = 0
+    end
+  end
+  table.sort(t, function(a, b)
+        return (a.rank == b.rank) and (a.neocomplete__match
+            < b.neocomplete__match) or (a.rank > b.rank)
+      end)
+  for i = 0, #candidates-1 do
+    candidates[i] = t[i+1]
+  end
+end
+EOF
+  return a:context.candidates
 endfunction"}}}
 
 let &cpo = s:save_cpo
