@@ -1,0 +1,12 @@
+snippet jsf
+	CREATE OR REPLACE FUNCTION ${1}(${2}) RETURNS ${3} AS $$
+		${4}
+	$$ LANGUAGE plv8 IMMUTABLE STRICT;
+
+snippet l
+	---{{{
+		${1}
+	---}}}
+
+snippet cl
+	plv8.elog(NOTICE, '${1}', ${2});
